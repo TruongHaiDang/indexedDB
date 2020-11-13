@@ -1,0 +1,7 @@
+{
+  "name": "indexeddb",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
