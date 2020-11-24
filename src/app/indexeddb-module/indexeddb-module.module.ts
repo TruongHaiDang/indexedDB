@@ -14,8 +14,9 @@ export class IndexeddbModuleModule {
   db: any;
   dbVersion: number = 1;
 
-  initIndexDB(dbName: string, ObjectStoreName: string[], keyPath: string[]) {
+  createIndexDB(dbName: string, dbVersion: number, ObjectStoreName: string[], keyPath: string[]) {
     return new Promise((resolve, reject) => {
+      this.dbVersion = dbVersion;
       const DBOpenRequest = window.indexedDB.open(dbName, this.dbVersion);
       DBOpenRequest.onupgradeneeded = (event: any) => {
         let db = event.target.result;
@@ -25,10 +26,27 @@ export class IndexeddbModuleModule {
         for(let i = 0; i < ObjectStoreName.length; i++) {
           db.createObjectStore(ObjectStoreName[i], {keyPath: keyPath[i]});
         }
-        
         // objectStore.createIndex("email", "email", { unique: false });
         resolve(db);
       };
+      DBOpenRequest.onsuccess = (event: any) => {
+        this.db = DBOpenRequest.result;
+        this.db.onversionchange = function() {
+          this.db.close();
+          alert("Database is outdated, please reload the page.")
+        };
+        resolve(this.db);
+      };
+      
+      DBOpenRequest.onerror = function(event: any) {
+        reject(event.target.errorCode);
+      }
+    })
+  }
+
+  initIndexDB(dbName: string, ObjectStoreName: string, keyPath: string) {
+    return new Promise((resolve, reject) => {
+      const DBOpenRequest = window.indexedDB.open(dbName, this.dbVersion);
       DBOpenRequest.onsuccess = (event: any) => {
         this.db = DBOpenRequest.result;
         this.db.onversionchange = function() {

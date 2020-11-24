@@ -9,12 +9,16 @@ import { Router } from '@angular/router';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  dbName: string = "myApp";
+  dbVerssion: number = 1;
+  init_objDB: string[] = ["users", "products"];
+  init_keyPath: string[] = ["email", "name"];
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) {
-    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.getDocsByCursor(db, "products")
+                    this.indexDB.getDocsByCursor(db, this.init_objDB[1])
                                 .then((ref) => {
                                   console.log(ref);
                                   this.presentToast("Get successfully!");
@@ -38,10 +42,10 @@ export class HomePage {
 
   getProduct() {
     let filter: Array<any> = ((<HTMLInputElement>document.getElementById("name")).value).split(', ');
-    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.getDocs(db, "products", filter)
+                    this.indexDB.getDocs(db, this.init_objDB[1], filter)
                                 .then((ref) => {
                                   console.log(ref);
                                   this.presentToast("Get successfully!");
@@ -61,10 +65,10 @@ export class HomePage {
       price: (<HTMLInputElement>document.getElementById("price")).value,
     };
 
-    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.addDocs(db, "products", productData)
+                    this.indexDB.addDocs(db, this.init_objDB[1], productData)
                                 .then((ref) => {
                                   this.presentToast("Added successfully!");
                                 })
@@ -83,10 +87,10 @@ export class HomePage {
       price: (<HTMLInputElement>document.getElementById("price")).value
     };
 
-    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.updateDocs(db, "products", productData.name, productData)
+                    this.indexDB.updateDocs(db, this.init_objDB[1], productData.name, productData)
                                 .then((ref) => {
                                   this.presentToast("Updated successfully!");
                                 })
@@ -101,10 +105,10 @@ export class HomePage {
   deleteProduct() {
     let name = (<HTMLInputElement>document.getElementById("name")).value;
 
-    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.deleteDocs(db, "products", name)
+                    this.indexDB.deleteDocs(db, this.init_objDB[1], name)
                                 .then((ref) => {
                                   this.presentToast("Deleted successfully!");
                                 })

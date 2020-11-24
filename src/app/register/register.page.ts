@@ -9,6 +9,11 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  dbName: string = "myApp";
+  dbVerssion: number = 1;
+  init_objDB: string[] = ["users", "products"];
+  init_keyPath: string[] = ["email", "name"];
+
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
 
   }
@@ -31,9 +36,9 @@ export class RegisterPage implements OnInit {
       email: (<HTMLInputElement>document.getElementById("email")).value,
       password: (<HTMLInputElement>document.getElementById("password")).value
     }
-    this.indexDB.initIndexDB("myApp", ["users", "products"], ["email", "name"]).then((db) => {
+    this.indexDB.initIndexDB(this.dbName, this.init_objDB[0], this.init_keyPath[0]).then((db) => {
       setTimeout(() => {
-        this.indexDB.addDocs(db, "users", userData)
+        this.indexDB.addDocs(db, this.init_objDB[0], userData)
                     .then((ref) => {
                       this.presentToast("SignUp successfully!");
                       setTimeout(() => this.router.navigateByUrl("login"), 1000)
