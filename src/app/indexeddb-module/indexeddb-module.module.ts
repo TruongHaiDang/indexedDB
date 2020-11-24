@@ -2,6 +2,7 @@ import { element } from 'protractor';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getMaxListeners } from 'process';
+import { type } from 'os';
 
 @NgModule({
   declarations: [],
@@ -56,16 +57,16 @@ export class IndexeddbModuleModule {
 
   getDocs(db: any, ObjectStoreName: string, key: any[]) {
     return new Promise((resolve, reject) => {
-      let result: Array<any> = [];
+      let result: string[] = [];
       for(let i = 0; i < key.length; i++){
           var request = db.transaction(ObjectStoreName)
                                 .objectStore(ObjectStoreName)
                                 .get(key[i]);
           request.onsuccess = (event: any) => {
             result.push(event.target.result)
+            if(i == key.length - 1) resolve(result);
         };
       }
-      resolve(result);
     })
   }
 
@@ -94,16 +95,16 @@ export class IndexeddbModuleModule {
 
   getDocsByCursor(db: any, ObjectStoreName: string) {
     return new Promise((resolve, reject) => {
-      let list: Array<any> = [];
+      let list: string[] = [];
       var objectStore = db.transaction(ObjectStoreName, "readwrite")
               .objectStore(ObjectStoreName)
       objectStore.openCursor().onsuccess = function(event: any) {
         var cursor = event.target.result;
         if (cursor) {
-          list.push(cursor);
+          list.push(cursor.value);
           cursor.continue();
+          resolve(list)
         }
-        resolve(list);
       };
     })
   }

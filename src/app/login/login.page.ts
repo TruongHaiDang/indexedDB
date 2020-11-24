@@ -31,10 +31,10 @@ export class LoginPage implements OnInit {
     };
 
     this.indexDB.initIndexDB("myApp", ["users"], ["email"]).then((db) => {
-      this.indexDB.getDocs(db, "users", userData.email).then((ref: any) => {
-        if(ref == undefined) {
+      this.indexDB.getDocs(db, "users", [userData.email]).then((ref) => {
+        if(ref[0] == undefined) {
           this.presentToast("User doesn't exist!");
-        }else if(ref.email == userData.email && ref.password == userData.password) {
+        }else if(ref[0].email == userData.email && ref[0].password == userData.password) {
           this.presentToast("Login successfully!");
           this.router.navigateByUrl("home");
         }else {

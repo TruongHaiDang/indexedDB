@@ -35,7 +35,7 @@ export class RegisterPage implements OnInit {
         this.indexDB.addDocs(db, "users", userData)
                     .then((ref) => {
                       this.presentToast("SignUp successfully!");
-                      this.router.navigateByUrl("login");
+                      setTimeout(() => this.router.navigateByUrl("login"), 1000)
                     })
                     .catch((err) => {
                       this.presentToast("Fail to signup!");
