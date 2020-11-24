@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Indexed DB
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,12 +9,42 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Indexed DB</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <form>
+      <ion-item lines="full">
+        <ion-label position="floating">Name</ion-label>
+        <ion-input id="name" type="text" required></ion-input>
+      </ion-item>
+  
+      <ion-item lines="full">
+        <ion-label position="floating">Quantity</ion-label>
+        <ion-input id="quantity" type="text" required></ion-input>
+      </ion-item>
+  
+      <ion-item lines="full">
+        <ion-label position="floating">Price</ion-label>
+        <ion-input id="price" type="text" required></ion-input>
+      </ion-item>
+
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="addProduct()" type="submit" color="success" expand="block">Add product</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="updateProduct()" type="submit" color="tertiary" expand="block">Update product</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="deleteProduct()" type="submit" color="danger" expand="block">Delete product</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
   </div>
 </ion-content>
