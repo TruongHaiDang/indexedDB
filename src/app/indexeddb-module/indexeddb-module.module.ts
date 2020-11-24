@@ -31,6 +31,10 @@ export class IndexeddbModuleModule {
       };
       DBOpenRequest.onsuccess = (event: any) => {
         this.db = DBOpenRequest.result;
+        this.db.onversionchange = function() {
+          this.db.close();
+          alert("Database is outdated, please reload the page.")
+        };
         resolve(this.db);
       };
       

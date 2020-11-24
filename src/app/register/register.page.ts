@@ -25,23 +25,24 @@ export class RegisterPage implements OnInit {
 
   register() {
     let userData: any = {
-      name: (<HTMLInputElement>document.getElementById("firstName")).value + " " + (<HTMLInputElement>document.getElementById("lastName")).value,
+      name: (<HTMLInputElement>document.getElementById("userName")).value,
       email: (<HTMLInputElement>document.getElementById("email")).value,
       password: (<HTMLInputElement>document.getElementById("password")).value
-    };
+    }
+    console.log(userData)
+    // this.indexDB.initIndexDB("myApp", ["users", "products"], ["email", "name"]).then((db) => {
 
-    this.indexDB.initIndexDB("myApp", ["users", "products"], ["email", "name"]).then((db) => {
-      setTimeout(() => {
-        this.indexDB.addDocs(db, "users", userData)
-                    .then((ref) => {
-                      this.presentToast("SignUp successfully!");
-                      setTimeout(() => this.router.navigateByUrl("login"), 1000)
-                    })
-                    .catch((err) => {
-                      this.presentToast("Fail to signup!");
-                      console.log(err)
-                    })
-      }, 2000);
-    })
+    //   setTimeout(() => {
+    //     this.indexDB.addDocs(db, "users", userData)
+    //                 .then((ref) => {
+    //                   this.presentToast("SignUp successfully!");
+    //                   setTimeout(() => this.router.navigateByUrl("login"), 1000)
+    //                 })
+    //                 .catch((err) => {
+    //                   this.presentToast("Fail to signup!");
+    //                   console.log(err)
+    //                 })
+    //   }, 2000);
+    // })
   }
 }
