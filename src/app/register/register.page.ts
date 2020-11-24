@@ -10,7 +10,6 @@ import { ToastController } from '@ionic/angular';
 })
 export class RegisterPage implements OnInit {
   dbName: string = "myApp";
-  dbVerssion: number = 1;
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
 
@@ -41,13 +40,13 @@ export class RegisterPage implements OnInit {
         this.indexDB.addDocs(db, this.init_objDB[0], userData)
                     .then((ref) => {
                       this.presentToast("SignUp successfully!");
-                      setTimeout(() => this.router.navigateByUrl("login"), 1000)
+                      this.router.navigateByUrl("login")
                     })
                     .catch((err) => {
                       this.presentToast("Fail to signup!");
                       console.log(err)
                     })
-      }, 2000);
+      }, 1000);
     })
   }
 }

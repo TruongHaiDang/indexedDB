@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class HomePage {
   dbName: string = "myApp";
-  dbVerssion: number = 1;
+  dbNameTesting: string = "_ionicstorage";
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
 
