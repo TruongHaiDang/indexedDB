@@ -54,18 +54,18 @@ export class IndexeddbModuleModule {
     })
   }
 
-  getDocsByCursor(db: any, ObjectStoreName: string) {
-    
-  }
-
-  getDocs(db: any, ObjectStoreName: string, key: any) {
+  getDocs(db: any, ObjectStoreName: string, key: any[]) {
     return new Promise((resolve, reject) => {
-      var request = db.transaction(ObjectStoreName)
-                              .objectStore(ObjectStoreName)
-                              .get(key);
-      request.onsuccess = (event: any) => {
-        resolve(event.target.result);
-      };
+      let result: Array<any> = [];
+      for(let i = 0; i < key.length; i++){
+          var request = db.transaction(ObjectStoreName)
+                                .objectStore(ObjectStoreName)
+                                .get(key[i]);
+          request.onsuccess = (event: any) => {
+            result.push(event.target.result)
+        };
+      }
+      resolve(result);
     })
   }
 
@@ -89,6 +89,22 @@ export class IndexeddbModuleModule {
               .objectStore(ObjectStoreName)
               .delete(key);
       resolve(true);
+    })
+  }
+
+  getDocsByCursor(db: any, ObjectStoreName: string) {
+    return new Promise((resolve, reject) => {
+      let list: Array<any> = [];
+      var objectStore = db.transaction(ObjectStoreName, "readwrite")
+              .objectStore(ObjectStoreName)
+      objectStore.openCursor().onsuccess = function(event: any) {
+        var cursor = event.target.result;
+        if (cursor) {
+          list.push(cursor);
+          cursor.continue();
+        }
+        resolve(list);
+      };
     })
   }
 }

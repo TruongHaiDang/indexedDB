@@ -11,7 +11,20 @@ import { Router } from '@angular/router';
 export class HomePage {
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) {
-
+    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+                .then((db) => {
+                  setTimeout(() => {
+                    this.indexDB.getDocsByCursor(db, "products")
+                                .then((ref) => {
+                                  console.log(ref);
+                                  this.presentToast("Get successfully!");
+                                })
+                                .catch((err) => {
+                                  this.presentToast("Get Fail!");
+                                  console.log(err)
+                                })
+                  }, 1000);
+                })
   }
 
   async presentToast(message: string) {
@@ -23,8 +36,22 @@ export class HomePage {
     toast.present();
   }
 
-  getDocs() {
-    
+  getProduct() {
+    let filter: Array<any> = ((<HTMLInputElement>document.getElementById("name")).value).split(', ');
+    this.indexDB.initIndexDB("myApp", ["products"], ["name"])
+                .then((db) => {
+                  setTimeout(() => {
+                    this.indexDB.getDocs(db, "products", filter)
+                                .then((ref) => {
+                                  console.log(ref);
+                                  this.presentToast("Get successfully!");
+                                })
+                                .catch((err) => {
+                                  this.presentToast("Get Fail!");
+                                  console.log(err)
+                                })
+                  }, 1000);
+                })
   }
 
   addProduct() {
@@ -53,15 +80,14 @@ export class HomePage {
     let productData: any = {
       name: (<HTMLInputElement>document.getElementById("name")).value,
       quantity: (<HTMLInputElement>document.getElementById("quantity")).value,
-      price: (<HTMLInputElement>document.getElementById("price")).value,
+      price: (<HTMLInputElement>document.getElementById("price")).value
     };
 
     this.indexDB.initIndexDB("myApp", ["products"], ["name"])
                 .then((db) => {
                   setTimeout(() => {
-                    this.indexDB.updateDocs(db, "products", "Dao bấm", productData)
+                    this.indexDB.updateDocs(db, "products", productData.name, productData)
                                 .then((ref) => {
-
                                   this.presentToast("Updated successfully!");
                                 })
                                 .catch((err) => {
