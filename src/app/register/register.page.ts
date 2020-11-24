@@ -9,7 +9,9 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
-  constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { }
+  constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
+
+  }
 
   ngOnInit() {
   }
@@ -29,20 +31,18 @@ export class RegisterPage implements OnInit {
       email: (<HTMLInputElement>document.getElementById("email")).value,
       password: (<HTMLInputElement>document.getElementById("password")).value
     }
-    console.log(userData)
-    // this.indexDB.initIndexDB("myApp", ["users", "products"], ["email", "name"]).then((db) => {
-
-    //   setTimeout(() => {
-    //     this.indexDB.addDocs(db, "users", userData)
-    //                 .then((ref) => {
-    //                   this.presentToast("SignUp successfully!");
-    //                   setTimeout(() => this.router.navigateByUrl("login"), 1000)
-    //                 })
-    //                 .catch((err) => {
-    //                   this.presentToast("Fail to signup!");
-    //                   console.log(err)
-    //                 })
-    //   }, 2000);
-    // })
+    this.indexDB.initIndexDB("myApp", ["users", "products"], ["email", "name"]).then((db) => {
+      setTimeout(() => {
+        this.indexDB.addDocs(db, "users", userData)
+                    .then((ref) => {
+                      this.presentToast("SignUp successfully!");
+                      setTimeout(() => this.router.navigateByUrl("login"), 1000)
+                    })
+                    .catch((err) => {
+                      this.presentToast("Fail to signup!");
+                      console.log(err)
+                    })
+      }, 2000);
+    })
   }
 }
