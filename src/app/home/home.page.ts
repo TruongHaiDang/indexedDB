@@ -15,7 +15,7 @@ export class HomePage {
   init_keyPath: string[] = ["email", "name"];
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) {
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
+    this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
                   setTimeout(() => {
                     this.indexDB.getDocsByCursor(db, this.init_objDB[1])
@@ -42,7 +42,7 @@ export class HomePage {
 
   getProduct() {
     let filter: Array<any> = ((<HTMLInputElement>document.getElementById("name")).value).split(', ');
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
+    this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
                   setTimeout(() => {
                     this.indexDB.getDocs(db, this.init_objDB[1], filter)
@@ -65,7 +65,7 @@ export class HomePage {
       price: (<HTMLInputElement>document.getElementById("price")).value,
     };
 
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
+    this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
                   setTimeout(() => {
                     this.indexDB.addDocs(db, this.init_objDB[1], productData)
@@ -87,7 +87,7 @@ export class HomePage {
       price: (<HTMLInputElement>document.getElementById("price")).value
     };
 
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
+    this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
                   setTimeout(() => {
                     this.indexDB.updateDocs(db, this.init_objDB[1], productData.name, productData)
@@ -105,7 +105,7 @@ export class HomePage {
   deleteProduct() {
     let name = (<HTMLInputElement>document.getElementById("name")).value;
 
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[1], this.init_keyPath[1])
+    this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
                   setTimeout(() => {
                     this.indexDB.deleteDocs(db, this.init_objDB[1], name)

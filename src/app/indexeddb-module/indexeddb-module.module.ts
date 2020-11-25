@@ -1,8 +1,5 @@
-import { element } from 'protractor';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { getMaxListeners } from 'process';
-import { type } from 'os';
 
 @NgModule({
   declarations: [],
@@ -10,12 +7,16 @@ import { type } from 'os';
     CommonModule
   ]
 })
+
 export class IndexeddbModuleModule { 
   db: any;
   dbVersion: number = 1;
 
   createIndexDB(dbName: string, dbVersion: number, ObjectStoreName: string[], keyPath: string[]) {
     return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+      }
       this.dbVersion = dbVersion;
       const DBOpenRequest = window.indexedDB.open(dbName, this.dbVersion);
       DBOpenRequest.onupgradeneeded = (event: any) => {
@@ -24,9 +25,9 @@ export class IndexeddbModuleModule {
           reject(event)
         };
         for(let i = 0; i < ObjectStoreName.length; i++) {
-          db.createObjectStore(ObjectStoreName[i], {keyPath: keyPath[i]});
+          var objectStore = db.createObjectStore(ObjectStoreName[i], {keyPath: keyPath[i]});
+          // objectStore.createIndex("email", "email", { unique: true });
         }
-        // objectStore.createIndex("email", "email", { unique: false });
         resolve(db);
       };
       DBOpenRequest.onsuccess = (event: any) => {
@@ -44,8 +45,11 @@ export class IndexeddbModuleModule {
     })
   }
 
-  initIndexDB(dbName: string, ObjectStoreName: string, keyPath: string) {
+  initIndexDB(dbName: string) {
     return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+      }
       const DBOpenRequest = window.indexedDB.open(dbName, this.dbVersion);
       DBOpenRequest.onsuccess = (event: any) => {
         this.db = DBOpenRequest.result;

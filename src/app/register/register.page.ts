@@ -35,7 +35,7 @@ export class RegisterPage implements OnInit {
       email: (<HTMLInputElement>document.getElementById("email")).value,
       password: (<HTMLInputElement>document.getElementById("password")).value
     }
-    this.indexDB.initIndexDB(this.dbName, this.init_objDB[0], this.init_keyPath[0]).then((db) => {
+    this.indexDB.initIndexDB(this.dbName).then((db) => {
       setTimeout(() => {
         this.indexDB.addDocs(db, this.init_objDB[0], userData)
                     .then((ref) => {
