@@ -12,7 +12,7 @@ export class IndexeddbModuleModule {
   db: any;
   dbVersion: number = 1;
 
-  createIndexDB(dbName: string, dbVersion: number, ObjectStoreName: string[], keyPath: string[]) {
+  createIndexDB(dbName: string, dbVersion: number, ObjectStoreName: string[], keyPath: string[], indexObj: any[]) {
     return new Promise((resolve, reject) => {
       if (!window.indexedDB) {
         console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
@@ -26,7 +26,9 @@ export class IndexeddbModuleModule {
         };
         for(let i = 0; i < ObjectStoreName.length; i++) {
           var objectStore = db.createObjectStore(ObjectStoreName[i], {keyPath: keyPath[i]});
-          // objectStore.createIndex("email", "email", { unique: true });
+          for(let j = 0; j < indexObj[i].length; j++) {
+            objectStore.createIndex(indexObj[i][j], indexObj[i][j], { unique: false });
+          }
         }
         resolve(db);
       };

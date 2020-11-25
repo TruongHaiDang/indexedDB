@@ -13,9 +13,10 @@ export class LoginPage implements OnInit {
   dbVerssion: number = 1;
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
+  indexObj: any[] = [["name", "email"], ["name", "quantity", "price"]]
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
-    this.indexDB.createIndexDB(this.dbName, this.dbVerssion, this.init_objDB, this.init_keyPath)
+    this.indexDB.createIndexDB(this.dbName, this.dbVerssion, this.init_objDB, this.init_keyPath, this.indexObj)
                 .then(() => {
 
                 })
