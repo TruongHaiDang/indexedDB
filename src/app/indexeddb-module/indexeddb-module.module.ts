@@ -32,6 +32,9 @@ export class IndexeddbModuleModule {
         }
         resolve(db);
       };
+      DBOpenRequest.onblocked = function(event) {
+        alert("Please close all other tabs with this site open!");
+      };
       DBOpenRequest.onsuccess = (event: any) => {
         this.db = DBOpenRequest.result;
         this.db.onversionchange = function() {
@@ -121,18 +124,31 @@ export class IndexeddbModuleModule {
     })
   }
 
-  getDocsByCursor(db: any, ObjectStoreName: string) {
+  getDocsByCursor(db: any, ObjectStoreName: string, limit: any[5] = [], direction: string = "next") {
     return new Promise((resolve, reject) => {
-      let list: string[] = [];
-      var objectStore = db.transaction(ObjectStoreName, "readwrite")
+      let list: string[] = [], keyRange: any;
+      limit[0] ? (keyRange = IDBKeyRange.bound(limit[1], limit[2], limit[3], limit[4])) : null;
+      var objectStore = db.transaction(ObjectStoreName)
               .objectStore(ObjectStoreName)
-      objectStore.openCursor().onsuccess = function(event: any) {
+      objectStore.openCursor(keyRange, direction).onsuccess = function(event: any) {
         var cursor = event.target.result;
         if (cursor) {
           list.push(cursor.value);
           cursor.continue();
           resolve(list)
         }
+      };
+    })
+  }
+
+  getDocsByIndex(db: any, ObjectStoreName: string, indexName: string, key: string) {
+    return new Promise((resolve, reject) => {
+      let list: string[] = [];
+      var objectStore = db.transaction(ObjectStoreName)
+              .objectStore(ObjectStoreName)
+      var index = objectStore.index(indexName);
+      index.get(key).onsuccess = function(event: any) {
+        resolve(event.target.result)
       };
     })
   }

@@ -13,21 +13,20 @@ export class HomePage {
   dbNameTesting: string = "_ionicstorage";
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
+  keyRange: any[] = [false, "Personal hosting", "lamdan", false, false];
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) {
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  setTimeout(() => {
-                    this.indexDB.getDocsByCursor(db, this.init_objDB[1])
-                                .then((ref) => {
-                                  console.log(ref);
-                                  this.presentToast("Get successfully!");
-                                })
-                                .catch((err) => {
-                                  this.presentToast("Get Fail!");
-                                  console.log(err)
-                                })
-                  }, 1000);
+                  this.indexDB.getDocsByCursor(db, this.init_objDB[1], this.keyRange)
+                  .then((ref) => {
+                    console.log(ref);
+                    this.presentToast("Get successfully!");
+                  })
+                  .catch((err) => {
+                    this.presentToast("Get Fail!");
+                    console.log(err)
+                  })
                 })
   }
 
@@ -44,8 +43,7 @@ export class HomePage {
     let filter: Array<any> = ((<HTMLInputElement>document.getElementById("name")).value).split(', ');
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  setTimeout(() => {
-                    this.indexDB.getDocs(db, this.init_objDB[1], filter)
+                  this.indexDB.getDocs(db, this.init_objDB[1], filter)
                                 .then((ref) => {
                                   console.log(ref);
                                   this.presentToast("Get successfully!");
@@ -54,7 +52,6 @@ export class HomePage {
                                   this.presentToast("Get Fail!");
                                   console.log(err)
                                 })
-                  }, 1000);
                 })
   }
 
@@ -67,16 +64,14 @@ export class HomePage {
 
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  setTimeout(() => {
-                    this.indexDB.addDocs(db, this.init_objDB[1], productData)
-                                .then((ref) => {
-                                  this.presentToast("Added successfully!");
-                                })
-                                .catch((err) => {
-                                  this.presentToast("Added Fail!");
-                                  console.log(err)
-                                })
-                  }, 1000);
+                  this.indexDB.addDocs(db, this.init_objDB[1], productData)
+                  .then((ref) => {
+                    this.presentToast("Added successfully!");
+                  })
+                  .catch((err) => {
+                    this.presentToast("Added Fail!");
+                    console.log(err)
+                  })
                 })
   }
 
@@ -89,8 +84,7 @@ export class HomePage {
 
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  setTimeout(() => {
-                    this.indexDB.updateDocs(db, this.init_objDB[1], productData.name, productData)
+                  this.indexDB.updateDocs(db, this.init_objDB[1], productData.name, productData)
                                 .then((ref) => {
                                   this.presentToast("Updated successfully!");
                                 })
@@ -98,7 +92,6 @@ export class HomePage {
                                   this.presentToast("Updated Fail!");
                                   console.log(err)
                                 })
-                  }, 1000);
                 })
   }
 
@@ -107,16 +100,14 @@ export class HomePage {
 
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  setTimeout(() => {
-                    this.indexDB.deleteDocs(db, this.init_objDB[1], name)
-                                .then((ref) => {
-                                  this.presentToast("Deleted successfully!");
-                                })
-                                .catch((err) => {
-                                  this.presentToast("Deleted Fail!");
-                                  console.log(err)
-                                })
-                  }, 1000);
+                  this.indexDB.deleteDocs(db, this.init_objDB[1], name)
+                  .then((ref) => {
+                    this.presentToast("Deleted successfully!");
+                  })
+                  .catch((err) => {
+                    this.presentToast("Deleted Fail!");
+                    console.log(err)
+                  })
                 })
     }
   }
