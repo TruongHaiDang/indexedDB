@@ -13,12 +13,12 @@ export class HomePage {
   dbNameTesting: string = "_ionicstorage";
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
-  keyRange: any[] = [false, "Personal hosting", "lamdan", false, false];
+  keyRange: any[] = [true, "f", "q", false, false];
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) {
     this.indexDB.initIndexDB(this.dbName)
                 .then((db) => {
-                  this.indexDB.getDocsByCursor(db, this.init_objDB[1], this.keyRange)
+                  this.indexDB.getDocsByCursor(db, this.init_objDB[1], this.keyRange, "prev")
                   .then((ref) => {
                     console.log(ref);
                     this.presentToast("Get successfully!");
@@ -28,6 +28,13 @@ export class HomePage {
                     console.log(err)
                   })
                 })
+
+    // this.indexDB.initIndexDB(this.dbName).then((db) => {
+    //   this.indexDB.getDocsByIndex(db, "users", "name", "le duc huy")
+    //               .then((ref) => {
+    //                 console.log(ref)
+    //               })
+    // })
   }
 
   async presentToast(message: string) {
