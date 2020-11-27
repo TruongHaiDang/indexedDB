@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { Dexie } from 'dexie';
 
 @NgModule({
   declarations: [],
@@ -165,4 +165,5 @@ export class IndexeddbModuleModule {
       };
     })
   }
+
 }
