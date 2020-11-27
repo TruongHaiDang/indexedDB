@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+
 @NgModule({
   declarations: [],
   imports: [
@@ -68,6 +69,18 @@ export class IndexeddbModuleModule {
       DBOpenRequest.onerror = function(event: any) {
         reject(event.target.errorCode);
       }
+    })
+  }
+
+  changeToRersistMode() {
+    return new Promise((resolve, reject) => {
+      navigator.storage.persist().then(function(persistent) {
+        console.log("Storage will not be cleared except by explicit user action");
+        resolve(true)
+      }).catch(function(err) {
+        console.log("Storage may be cleared by the UA under storage pressure");
+        reject(true)
+      })
     })
   }
 

@@ -20,7 +20,7 @@ export class HomePage {
                 .then((db) => {
                   this.indexDB.getDocsByCursor(db, this.init_objDB[1], this.keyRange, "prev")
                   .then((ref) => {
-                    console.log(ref);
+                    console.log("Search by cursor" + ref);
                     this.presentToast("Get successfully!");
                   })
                   .catch((err) => {
@@ -29,12 +29,12 @@ export class HomePage {
                   })
                 })
 
-    // this.indexDB.initIndexDB(this.dbName).then((db) => {
-    //   this.indexDB.getDocsByIndex(db, "users", "name", "le duc huy")
-    //               .then((ref) => {
-    //                 console.log(ref)
-    //               })
-    // })
+    this.indexDB.initIndexDB(this.dbName).then((db) => {
+      this.indexDB.getDocsByIndex(db, "users", "name", "le duc huy")
+                  .then((ref) => {
+                    console.log("Search by index" + ref)
+                  })
+    })
   }
 
   async presentToast(message: string) {
@@ -52,7 +52,7 @@ export class HomePage {
                 .then((db) => {
                   this.indexDB.getDocs(db, this.init_objDB[1], filter)
                                 .then((ref) => {
-                                  console.log(ref);
+                                  console.log("Search by keyPath" + ref);
                                   this.presentToast("Get successfully!");
                                 })
                                 .catch((err) => {

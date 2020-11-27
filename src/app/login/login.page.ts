@@ -18,7 +18,7 @@ export class LoginPage implements OnInit {
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
     this.indexDB.createIndexDB(this.dbName, this.dbVerssion, this.init_objDB, this.init_keyPath, this.indexObj)
                 .then(() => {
-
+                  this.indexDB.changeToRersistMode().then((ref) => {})
                 })
   }
 
