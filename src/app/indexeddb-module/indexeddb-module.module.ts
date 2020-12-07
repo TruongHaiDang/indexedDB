@@ -10,16 +10,39 @@ import { Dexie } from 'dexie';
 })
 
 export class IndexeddbModuleModule { 
-  db: any;
+  db: any; // tạo biến toàn cục để hứng đối tượng được trả về khi kết nối hoặc tạo database
   dbVersion: number = 1;
-
+  
+  /**
+   * khởi tạo cơ sở dữ liệu
+   * tham số: dbName,
+   *          dbVersion - mặc định là 1,
+   *          ObjectStoreName - đối tượng chứa dữ liệu,
+   *          keyPath: có vai trò như khóa chính hoặc id dùng để dịnh danh và truy vấn dữ liệu,
+   *          indexObj: index là các trường trong
+   * 
+   * ba tham số cuối phải đặt tương ứng
+   * vd: dbName - origin
+   *      objectStore_1
+   *        index1 -> đây là id
+   *        index2
+   *      objectStore_2
+   *        index_1 -> đây là id
+   *        index_2
+   *        index_3
+   * ==> createIndexDB(dbName, dbVersion, [objectStore_1, objectStore_2], [index1, index_1], indexObj: [[index1, index2], [index_1, index_2, index_3]])
+   */
   createIndexDB(dbName: string, dbVersion: number, ObjectStoreName: string[], keyPath: string[], indexObj: any[]) {
     return new Promise((resolve, reject) => {
       if (!window.indexedDB) {
         console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+        return;
       }
       this.dbVersion = dbVersion;
       const DBOpenRequest = window.indexedDB.open(dbName, this.dbVersion);
+
+      // onupgradeneeded kích hoạt khi dbVersion thay đổi
+
       DBOpenRequest.onupgradeneeded = (event: any) => {
         let db = event.target.result;
         db.onerror = function(event: any) {
@@ -33,9 +56,7 @@ export class IndexeddbModuleModule {
         }
         resolve(db);
       };
-      DBOpenRequest.onblocked = function(event) {
-        alert("Please close all other tabs with this site open!");
-      };
+
       DBOpenRequest.onsuccess = (event: any) => {
         this.db = DBOpenRequest.result;
         this.db.onversionchange = function() {
@@ -51,6 +72,10 @@ export class IndexeddbModuleModule {
     })
   }
 
+  /**
+   * kết nối tới database cần thao tác, đối tượng được trả về là đại diện database nếu thành công
+   * đối tượng trả về sẽ được truyền vào các hàm CRUD 
+   */
   initIndexDB(dbName: string) {
     return new Promise((resolve, reject) => {
       if (!window.indexedDB) {
@@ -71,7 +96,7 @@ export class IndexeddbModuleModule {
       }
     })
   }
-
+  // Đánh dấu database không thể bị xóa bởi phần mềm, chỉ xóa khi người dùng xóa
   changeToRersistMode() {
     return new Promise((resolve, reject) => {
       navigator.storage.persist().then(function(persistent) {
@@ -83,7 +108,10 @@ export class IndexeddbModuleModule {
       })
     })
   }
-
+  /**
+   * db là đối tượng được trả về khi gọi hàm initIndexDB() 
+   * ObjectStoreName là đối tượng chứa dữ liệu chứa trong database
+   */
   addDocs(db: any, ObjectStoreName: string, value: any) {
     return new Promise((resolve, reject) => {
       let request = db.transaction(ObjectStoreName, "readwrite")
@@ -136,7 +164,14 @@ export class IndexeddbModuleModule {
       resolve(true);
     })
   }
-
+  /**
+   * limit là một mảng 5 phần tủ dùng giới hạn dữ liệu khi lọc
+   * - limit[0]: bật tắt tính năng, true nếu dùng limit, false nếu không dùng
+   * - limit[1], limit[2]: lần lượt là giới hạn trên và dưới
+   * - limit[3], limit[4]: thuộc tính lấy biên của giới hạn tương ứng, true nếu lấy luôn giá trị giới hạn
+   *    vào tập kết quả
+   * direction: điều khiển hướng của cursor. Thông tin tại https://developer.mozilla.org/en-US/docs/Web/API/IDBCursor?redirectlocale=en-US&redirectslug=IndexedDB%2FIDBCursor#Constants
+   */
   getDocsByCursor(db: any, ObjectStoreName: string, limit: any[5] = [], direction: string = "next") {
     return new Promise((resolve, reject) => {
       let list: string[] = [], keyRange: any;
