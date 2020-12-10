@@ -16,10 +16,14 @@ export class LoginPage implements OnInit {
   indexObj: any[] = [["name", "email"], ["name", "quantity", "price"]]
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
-    this.indexDB.createIndexDB(this.dbName, this.dbVerssion, this.init_objDB, this.init_keyPath, this.indexObj)
-                .then(() => {
-                  this.indexDB.changeToRersistMode().then((ref) => {})
-                })
+    // this.indexDB.createIndexDB(this.dbName, this.dbVerssion, this.init_objDB, this.init_keyPath, this.indexObj)
+    //             .then(() => {
+    //               this.indexDB.changeToRersistMode().then((ref) => {})
+    //             })
+    this.indexDB.dexie_createDatabase("myApp", 1, {
+      users: `$$_id, *email, name`,
+      products: `$$_id, *name, quantity, price`
+    }, {})
   }
 
   ngOnInit() {

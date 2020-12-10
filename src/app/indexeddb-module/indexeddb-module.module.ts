@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Dexie } from 'dexie';
+import Dexie from 'dexie';
+import 'dexie-observable';
+import 'dexie-syncable';
+import '../libs/WebSocketSyncProtocol.js';
 
 @NgModule({
   declarations: [],
@@ -10,9 +13,20 @@ import { Dexie } from 'dexie';
 })
 
 export class IndexeddbModuleModule { 
+  /**
+   * 
+   * 
+   * 
+   * 
+   *                                  THIS AREA USING ORIGINAL INDEXEDDB API
+   * 
+   * 
+   * 
+   * 
+   */
   db: any; // tạo biến toàn cục để hứng đối tượng được trả về khi kết nối hoặc tạo database
   dbVersion: number = 1;
-  
+
   /**
    * khởi tạo cơ sở dữ liệu
    * tham số: dbName,
@@ -198,6 +212,87 @@ export class IndexeddbModuleModule {
       index.get(key).onsuccess = function(event: any) {
         resolve(event.target.result)
       };
+    })
+  }
+
+  /**
+   * 
+   * 
+   * 
+   * 
+   *                                  THIS AREA USING DEXIE
+   * 
+   * 
+   * 
+   * 
+   */
+
+  dexie_createDatabase(dbName: string, dbVersion: number, table: any, upgrade: any) {
+    return new Promise((resolve, reject) => {
+      var db = new Dexie(dbName);
+      db.version(dbVersion)
+        .stores(table)
+        .upgrade(tx => {upgrade});
+      db.open(); 
+      resolve(db);
+    })
+  }
+
+  dexie_initialDatabase(dbName: string, dbVersion: number) {
+    return new Promise((resolve, reject) => {
+      var db = new Dexie(dbName);
+      db.version(dbVersion)
+        .stores({})
+      db.open(); 
+      resolve(db);
+    })
+  }
+
+  dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
+    return new Promise((resolve, reject) => {
+      db.syncable.connect (protocol, socketUrl);
+      db.syncable.on('statusChanged', function (newStatus, url) {
+          resolve("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
+      });
+    })
+  }
+
+  dexie_getDocs(db: any, modify: string, objectStore: any, keys: any) {
+    return new Promise((resolve, reject) => {
+      db.transaction(modify, objectStore, (ref: any) => {
+        resolve(ref.bulkGet(keys))
+      });
+    })
+  }
+
+  async dexie_addDocs(db: any, data: any) {
+    // return new Promise((resolve, reject) => {
+      await db.products.add(data)
+      // db.transaction('rw', db.products, (product: any) => {
+      //   product.add(data);
+      //   resolve(true)
+      // });
+    // })
+  }
+
+  dexie_updateDocs(db: any, modify: string, objectStore: any, key: any, data: any) {
+    return new Promise((resolve, reject) => {
+      db.transaction(modify, objectStore, (ref: any) => {
+        ref.bulkPut(data, key)
+            .then((result) => {
+              resolve(true)
+            }).catch((err) => {
+              reject(err)
+            });
+      });
+    })
+  }
+
+  dexie_deleteDocs(db: any, modify: string, objectStore: any, keys: any) {
+    return new Promise((resolve, reject) => {
+      db.transaction(modify, objectStore, (ref: any) => {
+        resolve(ref.bulkDelete(keys))
+      });
     })
   }
 
