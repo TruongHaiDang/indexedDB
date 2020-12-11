@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Dexie from 'dexie';
 import 'dexie-observable';
@@ -13,6 +13,7 @@ import '../libs/WebSocketSyncProtocol.js';
 })
 
 export class IndexeddbModuleModule { 
+  
   /**
    * 
    * 
@@ -265,14 +266,17 @@ export class IndexeddbModuleModule {
     })
   }
 
-  async dexie_addDocs(db: any, data: any) {
-    // return new Promise((resolve, reject) => {
-      await db.products.add(data)
+  dexie_addDocs(db: any, data: any) {
+    return new Promise((resolve, reject) => {
+      console.log('data', data);
+      console.log('db.products', db.products);
+      db.products.add(data).then((ref) => resolve(ref))
+      // resolve(true)
       // db.transaction('rw', db.products, (product: any) => {
       //   product.add(data);
       //   resolve(true)
       // });
-    // })
+    })
   }
 
   dexie_updateDocs(db: any, modify: string, objectStore: any, key: any, data: any) {

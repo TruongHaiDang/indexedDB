@@ -89,13 +89,13 @@ export class HomePage {
       users: `$$_id, *email, name`,
       products: `$$_id, *name, quantity, price`
     }, {}).then((db) => {
-      this.indexDB.dexie_addDocs(db, productData)
+      this.indexDB.dexie_addDocs(db, productData).then((result) => console.log(result))
     })
 
-    this.indexDB.dexie_initialDatabase("myApp", 1)
-                .then((db) => {
-                  this.indexDB.dexie_addDocs(db, productData)
-                })
+    // this.indexDB.dexie_initialDatabase("myApp", 1)
+    //             .then((db) => {
+    //               this.indexDB.dexie_addDocs(db, productData)
+    //             })
   }
 
   updateProduct() {
