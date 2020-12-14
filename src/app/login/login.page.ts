@@ -46,17 +46,23 @@ export class LoginPage implements OnInit {
       password: (<HTMLInputElement>document.getElementById("password")).value,
     };
 
-    this.indexDB.initIndexDB(this.dbName).then((db) => {
-      this.indexDB.getDocs(db, this.init_objDB[0], [userData.email]).then((ref) => {
-        if(ref[0] == undefined) {
-          this.presentToast("User doesn't exist!");
-        }else if(ref[0].email == userData.email && ref[0].password == userData.password) {
-          this.presentToast("Login successfully!");
-          this.router.navigateByUrl("home");
-        }else {
-          this.presentToast("Login fail!");
-        }
-      })
+    // this.indexDB.initIndexDB(this.dbName).then((db) => {
+    //   this.indexDB.getDocs(db, this.init_objDB[0], [userData.email]).then((ref) => {
+    //     if(ref[0] == undefined) {
+    //       this.presentToast("User doesn't exist!");
+    //     }else if(ref[0].email == userData.email && ref[0].password == userData.password) {
+    //       this.presentToast("Login successfully!");
+    //       this.router.navigateByUrl("home");
+    //     }else {
+    //       this.presentToast("Login fail!");
+    //     }
+    //   })
+    // })
+
+    this.indexDB.dexie_getUsers(this.db, userData).then(result => {
+      if(result[0].email == userData.email && result[0].password == userData.password) {
+        this.router.navigateByUrl("home");
+      }
     })
   }
 }

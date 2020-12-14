@@ -248,6 +248,35 @@ export class IndexeddbModuleModule {
   //   })
   // }
 
+  // Users
+
+  dexie_getUsers(db: any, keys: any) {
+    return new Promise((resolve, reject) => {
+      db.users.where('email').equals(keys.email)
+      .toArray()
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
+    })
+  }
+
+  dexie_createUsers(db: any, data: any) {
+    return new Promise((resolve, reject) => {
+      db.users.bulkAdd(data)
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
+    })
+  }
+
+  // Products
+
   dexie_getDocs(db: any, keys: any[]) {
     return new Promise((resolve, reject) => {
       db.products.bulkGet(keys)

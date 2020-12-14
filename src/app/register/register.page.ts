@@ -9,12 +9,16 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  db: any;
   dbName: string = "myApp";
   init_objDB: string[] = ["users", "products"];
   init_keyPath: string[] = ["email", "name"];
 
   constructor(public indexDB: IndexeddbModuleModule, public router: Router, public toastController: ToastController) { 
-
+    this.db = this.indexDB.dexie_createDatabase("myApp", 1, {
+      users: `$$_id, email, name`,
+      products: `$$_id, name, quantity, price`
+    }, {})
   }
 
   ngOnInit() {
@@ -35,18 +39,17 @@ export class RegisterPage implements OnInit {
       email: (<HTMLInputElement>document.getElementById("email")).value,
       password: (<HTMLInputElement>document.getElementById("password")).value
     }
-    this.indexDB.initIndexDB(this.dbName).then((db) => {
-      setTimeout(() => {
-        this.indexDB.addDocs(db, this.init_objDB[0], userData)
-                    .then((ref) => {
-                      this.presentToast("SignUp successfully!");
-                      this.router.navigateByUrl("login")
-                    })
-                    .catch((err) => {
-                      this.presentToast("Fail to signup!");
-                      console.log(err)
-                    })
-      }, 1000);
-    })
+    // this.indexDB.initIndexDB(this.dbName).then((db) => {
+    //   this.indexDB.addDocs(db, this.init_objDB[0], userData)
+    //               .then((ref) => {
+    //                 this.presentToast("SignUp successfully!");
+    //                 this.router.navigateByUrl("login")
+    //               })
+    //               .catch((err) => {
+    //                 this.presentToast("Fail to signup!");
+    //                 console.log(err)
+    //               })
+    // })
+    this.indexDB.dexie_createUsers(this.db, userData).then(result => console.log(result))
   }
 }
