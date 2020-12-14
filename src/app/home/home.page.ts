@@ -93,7 +93,10 @@ export class HomePage {
     //               })
     //             })
 
-    this.indexDB.dexie_addDocs(this.db, [productData]).then(result => console.log(result))
+    this.indexDB.dexie_addDocs(this.db, [productData]).then(result => {
+      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8080");
+      console.log(result)
+    })
   }
 
   updateProduct() {

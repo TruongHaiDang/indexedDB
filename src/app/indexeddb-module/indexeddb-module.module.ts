@@ -239,14 +239,12 @@ export class IndexeddbModuleModule {
       return db;
   }
 
-  // dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
-  //   return new Promise((resolve, reject) => {
-  //     db.syncable.connect (protocol, socketUrl);
-  //     db.syncable.on('statusChanged', function (newStatus, url) {
-  //         resolve("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
-  //     });
-  //   })
-  // }
+  dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
+    db.syncable.connect (protocol, socketUrl);
+    db.syncable.on('statusChanged', function (newStatus, url) {
+        console.log("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
+    });
+  }
 
   // Users
 
