@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  db: any;
   dbName: string = "myApp";
   dbVerssion: number = 1;
   init_objDB: string[] = ["users", "products"];
@@ -20,9 +21,10 @@ export class LoginPage implements OnInit {
     //             .then(() => {
     //               this.indexDB.changeToRersistMode().then((ref) => {})
     //             })
-    this.indexDB.dexie_createDatabase("myApp", 1, {
-      users: `$$_id, *email, name`,
-      products: `$$_id, *name, quantity, price`
+
+    this.db = this.indexDB.dexie_createDatabase("myApp", 1, {
+      users: `$$_id, email, name`,
+      products: `$$_id, name, quantity, price`
     }, {})
   }
 

@@ -229,74 +229,70 @@ export class IndexeddbModuleModule {
    */
 
   dexie_createDatabase(dbName: string, dbVersion: number, table: any, upgrade: any) {
-    return new Promise((resolve, reject) => {
       var db = new Dexie(dbName);
       db.version(dbVersion)
         .stores(table)
         .upgrade(tx => {upgrade});
-      db.open(); 
-      resolve(db);
-    })
-  }
-
-  dexie_initialDatabase(dbName: string, dbVersion: number) {
-    return new Promise((resolve, reject) => {
-      var db = new Dexie(dbName);
-      db.version(dbVersion)
-        .stores({})
-      db.open(); 
-      resolve(db);
-    })
-  }
-
-  dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
-    return new Promise((resolve, reject) => {
-      db.syncable.connect (protocol, socketUrl);
-      db.syncable.on('statusChanged', function (newStatus, url) {
-          resolve("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
+      db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
       });
+      return db;
+  }
+
+  // dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
+  //   return new Promise((resolve, reject) => {
+  //     db.syncable.connect (protocol, socketUrl);
+  //     db.syncable.on('statusChanged', function (newStatus, url) {
+  //         resolve("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
+  //     });
+  //   })
+  // }
+
+  dexie_getDocs(db: any, keys: any[]) {
+    return new Promise((resolve, reject) => {
+      db.products.bulkGet(keys)
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
     })
   }
 
-  dexie_getDocs(db: any, modify: string, objectStore: any, keys: any) {
+  dexie_addDocs(db: any, data: any[]) {
     return new Promise((resolve, reject) => {
-      db.transaction(modify, objectStore, (ref: any) => {
-        resolve(ref.bulkGet(keys))
-      });
+      db.products.bulkAdd(data)
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
     })
   }
 
-  dexie_addDocs(db: any, data: any) {
+  dexie_updateDocs(db: any, data: any[]) {
     return new Promise((resolve, reject) => {
-      console.log('data', data);
-      console.log('db.products', db.products);
-      db.products.add(data).then((ref) => resolve(ref))
-      // resolve(true)
-      // db.transaction('rw', db.products, (product: any) => {
-      //   product.add(data);
-      //   resolve(true)
-      // });
+      db.products.bulkPut(data)
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
     })
   }
 
-  dexie_updateDocs(db: any, modify: string, objectStore: any, key: any, data: any) {
+  dexie_deleteDocs(db: any, keys: any[]) {
     return new Promise((resolve, reject) => {
-      db.transaction(modify, objectStore, (ref: any) => {
-        ref.bulkPut(data, key)
-            .then((result) => {
-              resolve(true)
-            }).catch((err) => {
-              reject(err)
-            });
-      });
-    })
-  }
-
-  dexie_deleteDocs(db: any, modify: string, objectStore: any, keys: any) {
-    return new Promise((resolve, reject) => {
-      db.transaction(modify, objectStore, (ref: any) => {
-        resolve(ref.bulkDelete(keys))
-      });
+      db.products.bulkDelete(keys)
+      .then((result: any) => {
+        resolve(result)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
     })
   }
 

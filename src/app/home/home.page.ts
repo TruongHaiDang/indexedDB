@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  db: any;
   dbName: string = "myApp";
   dbNameTesting: string = "_ionicstorage";
   init_objDB: string[] = ["users", "products"];
@@ -39,6 +40,11 @@ export class HomePage {
     //                 console.log("Search by index" + ref)
     //               })
     // })
+
+    this.db = this.indexDB.dexie_createDatabase("myApp", 1, {
+      users: `$$_id, email, name`,
+      products: `$$_id, name, quantity, price`
+    }, {})
   }
 
   async presentToast(message: string) {
@@ -51,7 +57,7 @@ export class HomePage {
   }
 
   getProduct() {
-    let filter: Array<any> = ((<HTMLInputElement>document.getElementById("name")).value).split(', ');
+    let filter: Array<any> = ((<HTMLInputElement>document.getElementById("_id")).value).split(', ');
     // this.indexDB.initIndexDB(this.dbName)
     //             .then((db) => {
     //               this.indexDB.getDocs(db, this.init_objDB[1], filter)
@@ -64,6 +70,8 @@ export class HomePage {
     //                               console.log(err)
     //                             })
     //             })
+
+    this.indexDB.dexie_getDocs(this.db, filter).then(result => console.log(result))
   }
 
   addProduct() {
@@ -85,21 +93,12 @@ export class HomePage {
     //               })
     //             })
 
-    this.indexDB.dexie_createDatabase("myApp", 1, {
-      users: `$$_id, *email, name`,
-      products: `$$_id, *name, quantity, price`
-    }, {}).then((db) => {
-      this.indexDB.dexie_addDocs(db, productData).then((result) => console.log(result))
-    })
-
-    // this.indexDB.dexie_initialDatabase("myApp", 1)
-    //             .then((db) => {
-    //               this.indexDB.dexie_addDocs(db, productData)
-    //             })
+    this.indexDB.dexie_addDocs(this.db, [productData]).then(result => console.log(result))
   }
 
   updateProduct() {
     let productData: any = {
+      _id: (<HTMLInputElement>document.getElementById("_id")).value,
       name: (<HTMLInputElement>document.getElementById("name")).value,
       quantity: (<HTMLInputElement>document.getElementById("quantity")).value,
       price: (<HTMLInputElement>document.getElementById("price")).value
@@ -116,10 +115,12 @@ export class HomePage {
     //                               console.log(err)
     //                             })
     //             })
+
+    this.indexDB.dexie_updateDocs(this.db, [productData]).then(result => console.log(result))
   }
 
   deleteProduct() {
-    let name = (<HTMLInputElement>document.getElementById("name")).value;
+    let filter: Array<any> = ((<HTMLInputElement>document.getElementById("_id")).value).split(', ');
 
     // this.indexDB.initIndexDB(this.dbName)
     //             .then((db) => {
@@ -133,6 +134,6 @@ export class HomePage {
     //               })
     //             })
 
-
+    this.indexDB.dexie_deleteDocs(this.db, filter).then(result => console.log(result))
     }
   }
