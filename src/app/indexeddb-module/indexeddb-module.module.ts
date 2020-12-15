@@ -244,6 +244,7 @@ export class IndexeddbModuleModule {
     db.syncable.on('statusChanged', function (newStatus, url) {
         console.log("Sync Status changed: " + Dexie.Syncable.StatusTexts[newStatus]);
     });
+    // db.syncable
   }
 
   // Users

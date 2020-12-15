@@ -94,7 +94,7 @@ export class HomePage {
     //             })
 
     this.indexDB.dexie_addDocs(this.db, [productData]).then(result => {
-      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8080");
+      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
       console.log(result)
     })
   }
@@ -119,7 +119,10 @@ export class HomePage {
     //                             })
     //             })
 
-    this.indexDB.dexie_updateDocs(this.db, [productData]).then(result => console.log(result))
+    this.indexDB.dexie_updateDocs(this.db, [productData]).then(result => {
+      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
+      console.log(result)
+    })
   }
 
   deleteProduct() {
@@ -137,6 +140,9 @@ export class HomePage {
     //               })
     //             })
 
-    this.indexDB.dexie_deleteDocs(this.db, filter).then(result => console.log(result))
+    this.indexDB.dexie_deleteDocs(this.db, filter).then(result => {
+      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
+      console.log(result)
+    })
     }
   }
