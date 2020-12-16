@@ -20,7 +20,7 @@ export class IndexeddbModuleModule {
    * 
    * 
    *                                  THIS AREA USING ORIGINAL INDEXEDDB API
-   * 
+    *                    https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
    * 
    * 
    * 
@@ -222,12 +222,19 @@ export class IndexeddbModuleModule {
    * 
    * 
    *                                  THIS AREA USING DEXIE
-   * 
+   *                                  https://dexie.org/docs
    * 
    * 
    * 
    */
 
+  /**
+   * dexie_createDatabase() dùng để tạo database kết quả trả về là một đối tượng đại diện cho database đó. Nếu database đã tồn tại nó sẽ trả về đối tượng đại diện 
+   * dbName : tên database
+   * dbVersion : phiên bản database
+   * table : cấu trúc database khi khởi tạo, xem các quy tắc tại https://dexie.org/docs/Version/Version.stores()
+   * upgrade : cấu trúc database khi nâng cấp dbVersion - lưu ý không cần định nghĩa lại những gì đã có ở table
+   */
   dexie_createDatabase(dbName: string, dbVersion: number, table: any, upgrade: any) {
       var db = new Dexie(dbName);
       db.version(dbVersion)
@@ -239,6 +246,12 @@ export class IndexeddbModuleModule {
       return db;
   }
 
+  /**
+   * dexie_syncToServer() dùng để mở  tới server đồng bộ 
+   * db : đối tượng dexie đại diện database được trả về từ dexie_createDatabase() 
+   * protocol : giao thức được định nghĩa trong  libs/WebSocketSyncProtocol.js
+   * socketUrl : url trỏ tới socket server có chức năng đồng bộ - lưu ý giao thức bắt đầu bằng ws: hoặc wss: 
+   */
   dexie_syncToServer(db: any, protocol: string, socketUrl: string) {
     db.syncable.connect (protocol, socketUrl);
     db.syncable.on('statusChanged', function (newStatus, url) {
