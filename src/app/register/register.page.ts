@@ -18,7 +18,9 @@ export class RegisterPage implements OnInit {
     this.db = this.indexDB.dexie_createDatabase("myApp", 1, {
       users: `$$_id, email, name`,
       products: `$$_id, name, quantity, price`
-    }, {})
+    }, {});
+
+    this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
   }
 
   ngOnInit() {

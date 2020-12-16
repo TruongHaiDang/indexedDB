@@ -44,7 +44,9 @@ export class HomePage {
     this.db = this.indexDB.dexie_createDatabase("myApp", 1, {
       users: `$$_id, email, name`,
       products: `$$_id, name, quantity, price`
-    }, {})
+    }, {});
+    
+    this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
   }
 
   async presentToast(message: string) {
@@ -94,7 +96,7 @@ export class HomePage {
     //             })
 
     this.indexDB.dexie_addDocs(this.db, [productData]).then(result => {
-      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
+      // this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
       console.log(result)
     })
   }
@@ -120,7 +122,7 @@ export class HomePage {
     //             })
 
     this.indexDB.dexie_updateDocs(this.db, [productData]).then(result => {
-      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
+      // this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
       console.log(result)
     })
   }
@@ -141,7 +143,7 @@ export class HomePage {
     //             })
 
     this.indexDB.dexie_deleteDocs(this.db, filter).then(result => {
-      this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
+      // this.indexDB.dexie_syncToServer(this.db, "websocket", "ws://localhost:8001");
       console.log(result)
     })
     }
